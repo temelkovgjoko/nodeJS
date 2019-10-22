@@ -2,7 +2,7 @@ const Post = require('../models/Post')
 
 exports.viewCreateScreen = function (req, res) {
     res.render('create-post')
-}
+}  
 
 exports.create = function (req, res) {
     let post = new Post(req.body, req.session.user._id)
@@ -18,6 +18,6 @@ exports.viewSingle = async function (req, res) {
         let post = await Post.findSingleById(req.params.id)
         res.render('single-post-screen', { post: post })
     } catch{
-        res.send("404 template will go here.")
+        res.render('404')
     }
 } 

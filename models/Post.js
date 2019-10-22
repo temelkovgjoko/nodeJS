@@ -37,7 +37,7 @@ Post.prototype.create = function () {
         if (!this.errors.length) {
             // save post into database
             postsCollection.insertOne(this.data).then(() => {
-                resolve() 
+                resolve()
             }).catch(() => {
                 this.errors.push("Please try again later.")
                 reject(this.errors)
@@ -51,13 +51,27 @@ Post.prototype.create = function () {
 
 Post.findSingleById = function (id) {
     return new Promise(async function (resolve, reject) {
-        if (typeof(id) != "string" || !ObjectID.isValid(id)) {
+        if (typeof (id) != "string" || !ObjectID.isValid(id)) {
             reject()
             return
         }
-        let post = await postsCollection.findOne({ _id: new ObjectID(id) })
-        if (post) {
-            resolve(post)
+        let posts = await postsCollection.aggregate([
+            { $match: { _id: new ObjectID(id) } },
+            { $lookup: { from: "users", localField: "author", foreignField: "_id", as: "authorDocument" } },
+            {
+                $project: {
+                    title: 1,
+                    body: 1,
+                    createdDate: 1,
+                    author: { $arrayElemAt: ["$authorDocument", 0] }
+                }
+            }
+        ]).toArray([
+
+        ])
+        if (posts.length) {
+            console.log(posts[0])
+            resolve(posts[0])
         } else {
             reject()
         }
