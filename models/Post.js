@@ -16,7 +16,7 @@ Post.prototype.cleanUp = function () {
     }
     if (typeof (this.data.body) != "string") {
         this.data.body = ""
-    } 
+    }
 
     // get rid of any bogus properties
     this.data = {
@@ -136,11 +136,26 @@ Post.findSingleById = function (id, visitorId) {
 
 Post.findByAuthorId = function (authorId) {
     return Post.reusablePostQuery([
-        { $match: { author: authorId } },
+        { $match: { author: authorId } }, 
         { $sort: { createdDate: -1 } }
     ])
 }
 
-
+Post.delete = function (postIdToDelete, currentUserId) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let post = await Post.findSingleById(postIdToDelete, currentUserId)
+            if (post.isVisitorOwner) {
+                await postsCollection.deleteOne({ _id: new ObjectID(postIdToDelete) })
+                resolve()
+            }
+            else {
+                reject()
+            }
+        } catch{
+            reject()
+        }
+    })
+}
 
 module.exports = Post
