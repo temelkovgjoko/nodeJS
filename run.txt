@@ -1,0 +1,9 @@
+MAC & LINUX
+
+"watch": "nodemon db --ignore frontend-js --ignore public/ & webpack --watch",
+
+WINDOWS
+
+"watch": "start nodemon db --ignore frontend-js --ignore public/ && start webpack --watch",
+
+CONCURRENTLY
