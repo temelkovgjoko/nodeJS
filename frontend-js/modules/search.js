@@ -33,15 +33,14 @@ export default class Search {
         if (value != '' && this.value != this.previousValue) {
             clearTimeout(this.typingWaitTimer)
             this.showLoaderIcon()
-            this.typingWaitTimer = setTimeout(() => this.sendRequest(), 2750)
+            this.typingWaitTimer = setTimeout(() => this.sendRequest(), 250)
         }
-
         this.previousValue = value
     }
 
     sendRequest() {
-        axios.post('/search', { searchTerm: this.inputField.value }).then(() => {
-
+        axios.post('/search', { searchTerm: this.inputField.value }).then((response) => {
+            console.log(response.data)
         }).catch(() => {
             alert("request failed")
         })
